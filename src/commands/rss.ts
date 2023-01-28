@@ -3,7 +3,8 @@ import { Feed } from "../generator/feed";
 
 export const rssCommand = new SlashCommandBuilder()
     .setName("rss")
-    .setDescription("Regenerates the rss file");
+    .setDescription("Regenerates the rss file")
+    .setDefaultMemberPermissions(0);
 
 export async function rssAction(interaction: ChatInputCommandInteraction): Promise<void> {
     try {
