@@ -1,0 +1,16 @@
+[bot]
+application_id = ""
+token = ""
+
+[discord]
+guild_id = ""
+channels = ["", ""]
+
+
+[out] # OPTIONAL (defaults to current working dir + feed.rss)
+
+# outFileDir = "./dist" -> "./dist" equals "dist" and is relative path
+# outFileDir = "/dist" -> is absolute path
+
+# outFile = "./dist/anyName.rss" -> "./dist" equals "dist" and is relative path
+# outFile = "dist/anyName.rss" -> "./dist" equals "dist" is absolute path
