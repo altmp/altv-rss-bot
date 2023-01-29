@@ -1,0 +1,10 @@
+{
+  apps : [
+    {
+      name      : "altv-rss-bot",
+      script    : "npm",
+      interpreter: "none",
+      args: "run serve"
+    }
+  ]
+}
