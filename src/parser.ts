@@ -66,7 +66,9 @@ export function parseContent(content: string, attachments: IterableIterator<Atta
         if (role) {
             content = content.replace(
                 `<span class="d-mention d-role">${id}</span>`,
-                `<span data-mention="${hexToRgb(role.hexColor)}">@${role.name}</span>`
+                role.color > 0
+                    ? `<span data-mention="${hexToRgb(role.hexColor)}">@${role.name}</span>`
+                    : `<span data-mention>@${role.name}</span>`
             );
         }
     });
