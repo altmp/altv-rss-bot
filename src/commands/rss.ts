@@ -3,13 +3,13 @@ import { Feed } from "../generator/feed";
 
 export const rssCommand = new SlashCommandBuilder()
     .setName("rss")
-    .setDescription("Regenerates the rss file")
+    .setDescription("Generate the rss files")
     .setDefaultMemberPermissions(0);
 
 export async function rssAction(interaction: ChatInputCommandInteraction): Promise<void> {
     try {
         await interaction.reply({
-            content: "The rss file is generating..",
+            content: "The rss files are generating..",
             ephemeral: true,
         });
     } catch (error) {
@@ -23,12 +23,12 @@ export async function rssAction(interaction: ChatInputCommandInteraction): Promi
     try {
         await Feed.generate();
         await interaction.editReply({
-            content: "The rss file was succesfuly generated !",
+            content: "The rss files succesfuly generated !",
         });
     } catch (error) {
         console.error(error);
         interaction.editReply({
-            content: "An error occured during the file generation..",
+            content: "An error occured during the files generation..",
         });
     }
 }

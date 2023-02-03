@@ -1,12 +1,9 @@
-import { ChannelType } from "discord.js";
-
 import type { Author, Extension, FeedOptions, Item } from "./types";
 import { renderRSS } from "./rss2";
 
-import { fetchAllChannelMessages } from "../discord";
+import { getChannelsMessages } from "../discord";
 import { writeRssFile } from "../io";
 import { config } from "../config";
-import { rssBot } from "../bot";
 
 export * from "./types";
 
@@ -38,34 +35,19 @@ export class FeedMessage {
     }
 }
 
+export type FeedType = typeof FEED_TYPE;
+export const FEED_TYPE = Object.freeze({
+    FT_LIMITED: Symbol("limited-feed"),
+    FT_FULL: Symbol("full-feed"),
+});
+
 /**
  * Class used to generate Feeds
  */
 export class Feed {
     static async generate(): Promise<void> {
-        const buffer: FeedMessage[] = [];
-
-        for (let i = 0, l = config.discord.channels.length; i < l; i++) {
-            const channelId = config.discord.channels[i] as string;
-            const channel = rssBot.channels.cache.get(channelId);
-
-            if (
-                !channel ||
-                channel.type === ChannelType.GuildCategory ||
-                channel.isVoiceBased() ||
-                channel.isDMBased()
-            ) {
-                console.log(`Wrong channel type (id ${channelId}), skipped`);
-                continue;
-            }
-
-            console.log(`[${i + 1}/${l}] Fetching messages...`);
-
-            // No parallelizing on purpose to reduce rate limiting
-            buffer.push(...(await fetchAllChannelMessages(channel)));
-        }
-
-        const feed = new Feed({
+        // TODO: different url for limited type feed
+        const limitedFeed = new Feed({
             title: "",
             id: "https://cdn.altv.mp/rss/news.rss",
             link: "https://cdn.altv.mp/rss/news.rss",
@@ -74,14 +56,33 @@ export class Feed {
             updated: new Date(),
         });
 
-        for (const feedMessage of buffer.sort(
+        const fullFeed = new Feed({
+            title: "",
+            id: "https://cdn.altv.mp/rss/news.rss",
+            link: "https://cdn.altv.mp/rss/news.rss",
+            language: "en",
+            copyright: "All right reserved 2023, alt:MP",
+            updated: new Date(),
+        });
+
+        const messages = await getChannelsMessages();
+        const sortedMessages = messages.sort(
             (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
-        )) {
-            feedMessage.addItem(feed);
+        );
+
+        for (let i = 0, l = sortedMessages.length; i < l; i++) {
+            const message = sortedMessages[i]!;
+
+            if (config.out.rss_items_limit >= i + 1) {
+                message.addItem(limitedFeed);
+            }
+
+            message.addItem(fullFeed);
         }
 
-        writeRssFile(feed.rss2());
-        console.log("Generating rss file..");
+        writeRssFile(FEED_TYPE.FT_LIMITED, limitedFeed.rss2());
+        writeRssFile(FEED_TYPE.FT_FULL, fullFeed.rss2());
+        console.log(`Generating rss files..`);
     }
 
     options: FeedOptions;
