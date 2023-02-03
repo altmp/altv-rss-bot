@@ -81,6 +81,10 @@ export function parseContent(content: string, attachments: IterableIterator<Atta
         }
     }
 
+    // set @everyone and @here as mentions
+    content = content.replaceAll("@everyone", "<span data-mention>@everyone</span>");
+    content = content.replaceAll("@here", "<span data-mention>@here</span>");
+
     content = content.replaceAll('<span class="d-spoiler"', "<span data-spoiler");
     content = content.replaceAll('<img class="d-emoji d-emoji-animated"', "<img data-emoji");
     content = content.replaceAll('<img class="d-emoji"', "<img data-emoji");
