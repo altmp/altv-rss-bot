@@ -1,4 +1,4 @@
-import { TextChannel } from "discord.js";
+import { NewsChannel, TextChannel } from "discord.js";
 
 import type { Author, Extension, FeedOptions, Item } from "./types";
 import { renderRSS } from "./rss2";
@@ -45,7 +45,8 @@ export class Feed {
         for (let i = 0, l = config.discord.channels.length; i < l; i++) {
             const channelId = config.discord.channels[i] as string;
             const channel = rssBot.channels.cache.get(channelId);
-            if (!(channel instanceof TextChannel)) {
+            
+            if (!(channel instanceof TextChannel) || !(channel instanceof NewsChannel)) {
                 console.warn(`The channel ${channelId} is not a TextChannel, skipped`);
                 continue;
             }
