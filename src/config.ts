@@ -1,7 +1,5 @@
-import { stat } from "node:fs/promises";
-import { z } from "zod";
-
 import { readConfigFile } from "./io";
+import { z } from "zod";
 
 const CONFIG_SCHEMA = z
     .object({

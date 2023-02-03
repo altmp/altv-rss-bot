@@ -27,8 +27,8 @@ export class FeedMessage {
             author: [
                 {
                     name: this.edited
-                        ? `<span data-localized="IN_CHANNEL">#${this.channelName}</span> &#183; <span data-localized="EDITED">`
-                        : `<span data-localized="IN_CHANNEL">#${this.channelName}</span>`,
+                        ? `<span data-localized="#${this.channelName}">IN_CHANNEL</span> &#183; <span data-localized="EDITED">`
+                        : `<span data-localized="#${this.channelName}">IN_CHANNEL</span>`,
                 },
             ],
         });
