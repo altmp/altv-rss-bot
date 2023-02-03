@@ -8,19 +8,27 @@ export const rssCommand = new SlashCommandBuilder()
 
 export async function rssAction(interaction: ChatInputCommandInteraction): Promise<void> {
     try {
-        setImmediate(() => {
-            interaction.reply({
-                content: "The rss file was succesfuly re-generated !",
-                ephemeral: true,
-            });
+        await interaction.reply({
+            content: "The rss file is generating..",
+            ephemeral: true,
         });
-
-        await Feed.generate();
     } catch (error) {
         console.error(error);
-        await interaction.reply({
+        interaction.reply({
             content: "There was an error while executing this command!",
             ephemeral: true,
+        });
+    }
+
+    try {
+        await Feed.generate();
+        await interaction.editReply({
+            content: "The rss file was succesfuly generated !",
+        });
+    } catch (error) {
+        console.error(error);
+        interaction.editReply({
+            content: "An error occured during the file generation..",
         });
     }
 }
