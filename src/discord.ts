@@ -22,7 +22,8 @@ export async function fetchAllChannelMessages(channel: TextChannel): Promise<Fee
             message.id,
             message.url,
             parseContent(message.content),
-            message.editedAt ?? message.createdAt
+            message.createdAt,
+            Boolean(message.editedAt)
         )
     );
 
@@ -35,7 +36,8 @@ export async function fetchAllChannelMessages(channel: TextChannel): Promise<Fee
                         message.id,
                         message.url,
                         parseContent(message.content),
-                        message.editedAt ?? message.createdAt
+                        message.createdAt,
+                        Boolean(message.editedAt)
                     )
                 )
             );

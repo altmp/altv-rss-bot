@@ -16,7 +16,8 @@ export class FeedMessage {
         readonly id: string,
         readonly url: string,
         readonly content: string,
-        readonly date: Date
+        readonly createdAt: Date,
+        readonly edited: boolean
     ) {}
 
     addItem(feed: Feed): void {
@@ -24,11 +25,13 @@ export class FeedMessage {
             title: "",
             id: this.id,
             link: this.url,
-            date: this.date,
+            date: this.createdAt,
             description: this.content,
             author: [
                 {
-                    name: `in #${this.channelName}`,
+                    name: this.edited
+                        ? `in #${this.channelName} · edited`
+                        : `in #${this.channelName}`,
                 },
             ],
         });
@@ -45,7 +48,7 @@ export class Feed {
         for (let i = 0, l = config.discord.channels.length; i < l; i++) {
             const channelId = config.discord.channels[i] as string;
             const channel = rssBot.channels.cache.get(channelId);
-            
+
             console.log(`[${i + 1}/${l}] Fetching messages...`);
 
             // No parallelizing on purpose to reduce rate limiting
@@ -61,7 +64,9 @@ export class Feed {
             updated: new Date(),
         });
 
-        for (const feedMessage of buffer.sort((a, b) => b.date.getTime() - a.date.getTime())) {
+        for (const feedMessage of buffer.sort(
+            (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+        )) {
             feedMessage.addItem(feed);
         }
 
