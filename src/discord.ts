@@ -1,5 +1,7 @@
-import { FeedMessage } from "./generator/feed";
 import { TextChannel } from "discord.js";
+
+import { FeedMessage } from "./generator/feed";
+import { parseContent } from "./parser";
 
 // TODO: handle rate limits
 export async function fetchAllChannelMessages(channel: TextChannel): Promise<FeedMessage[]> {
@@ -19,7 +21,7 @@ export async function fetchAllChannelMessages(channel: TextChannel): Promise<Fee
             channel.name,
             message.id,
             message.url,
-            message.content,
+            parseContent(message.content),
             message.editedAt ?? message.createdAt
         )
     );
@@ -32,7 +34,7 @@ export async function fetchAllChannelMessages(channel: TextChannel): Promise<Fee
                         channel.name,
                         message.id,
                         message.url,
-                        message.content,
+                        parseContent(message.content),
                         message.editedAt ?? message.createdAt
                     )
                 )
