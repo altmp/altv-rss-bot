@@ -30,8 +30,8 @@ export class FeedMessage {
             author: [
                 {
                     name: this.edited
-                        ? `in #${this.channelName} · edited`
-                        : `in #${this.channelName}`,
+                        ? `<span data-localized="IN_CHANNEL">#${this.channelName}</span> · <span data-localized="EDITED">`
+                        : `<span data-localized="IN_CHANNEL">#${this.channelName}</span>`,
                 },
             ],
         });
