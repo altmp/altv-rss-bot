@@ -90,7 +90,9 @@ export function parseContent(content: string, attachments: IterableIterator<Atta
 
     let imgs = "";
     for (const attachment of attachments) {
-        imgs += `<img alt="${attachment.name}" src="${attachment.url}">`;
+        if (["jpg", "png"].includes(attachment.url.split(".")?.at(-1) ?? "")) {
+            imgs += `<img alt="${attachment.name}" src="${attachment.url}">`;
+        }
     }
 
     if (imgs.length > 0) {
