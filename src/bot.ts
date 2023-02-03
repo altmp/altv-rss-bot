@@ -10,5 +10,3 @@ export const rssBot = new Client({
         GatewayIntentBits.MessageContent,
     ],
 });
-
-rssBot.login(config.bot.token);

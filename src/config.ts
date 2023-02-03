@@ -1,5 +1,7 @@
-import { readConfigFile } from "./io";
+import { stat } from "node:fs/promises";
 import { z } from "zod";
+
+import { readConfigFile } from "./io";
 
 const CONFIG_SCHEMA = z
     .object({
@@ -17,8 +19,11 @@ const CONFIG_SCHEMA = z
             .strict(),
         out: z
             .object({
-                outFileDir: z.ostring(),
-                outFile: z.ostring(),
+                rss_items_limit: z.coerce.number().min(1),
+                // optional
+                out_file_dir: z.ostring(),
+                limited_feed_out_file: z.ostring(),
+                full_feed_out_file: z.ostring(),
             })
             .strict(),
     })
