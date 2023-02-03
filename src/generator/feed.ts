@@ -81,6 +81,7 @@ export class Feed {
         }
 
         writeRssFile(feed.rss2());
+        console.log("Generating rss file..");
     }
 
     options: FeedOptions;
