@@ -46,11 +46,6 @@ export class Feed {
             const channelId = config.discord.channels[i] as string;
             const channel = rssBot.channels.cache.get(channelId);
             
-            if (!(channel instanceof TextChannel) || !(channel instanceof NewsChannel)) {
-                console.warn(`The channel ${channelId} is not a TextChannel, skipped`);
-                continue;
-            }
-
             console.log(`[${i + 1}/${l}] Fetching messages...`);
 
             // No parallelizing on purpose to reduce rate limiting
@@ -59,10 +54,10 @@ export class Feed {
 
         const feed = new Feed({
             title: "",
-            id: "https://altv.mp/rss",
-            link: "https://altv.mp/rss",
+            id: "https://cdn.altv.mp/rss/news.rss",
+            link: "https://cdn.altv.mp/rss/news.rss",
             language: "en",
-            copyright: "All right reserved 2023, altMp",
+            copyright: "All right reserved 2023, alt:MP",
             updated: new Date(),
         });
 
