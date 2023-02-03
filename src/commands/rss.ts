@@ -8,11 +8,14 @@ export const rssCommand = new SlashCommandBuilder()
 
 export async function rssAction(interaction: ChatInputCommandInteraction): Promise<void> {
     try {
-        await Feed.generate();
-        interaction.reply({
-            content: "The rss file was succesfuly re-generated !",
-            ephemeral: true,
+        setImmediate(() => {
+            interaction.reply({
+                content: "The rss file was succesfuly re-generated !",
+                ephemeral: true,
+            });
         });
+
+        await Feed.generate();
     } catch (error) {
         console.error(error);
         await interaction.reply({
