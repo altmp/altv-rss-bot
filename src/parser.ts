@@ -8,7 +8,7 @@ const Regex = Object.freeze({
     R_ROLE: /(?<=\<span class="d-mention d-role">)(.*?)(?=<\/span>)/g,
     R_CHANNEL: /(?<=\<span class="d-mention d-channel">)(.*?)(?=<\/span>)/g,
     R_USER: /(?<=\<span class="d-mention d-user">)(.*?)(?=<\/span>)/g,
-    R_TIMESTAMP: /(?<=\&lt;t:)(.*?)(?=:F&gt;)/g,
+    R_TIMESTAMP: /&lt;t:(.*?)(:F&gt;|:R&gt;|&gt;)/g,
 });
 
 function hexToRgb(hex: string) {
@@ -72,12 +72,9 @@ export function parseContent(content: string, attachments: IterableIterator<Atta
     });
 
     for (const target of content.matchAll(Regex.R_TIMESTAMP)) {
-        const timestamp = target[1];
-        if (target.input && timestamp) {
-            content = content.replaceAll(
-                target.input,
-                `<span data-timestamp='T'>${timestamp}</span>`
-            );
+        const [selection, timestamp] = target;
+        if (timestamp) {
+            content = content.replaceAll(selection, `<span data-timestamp='T'>${timestamp}</span>`);
         }
     }
 
