@@ -1,10 +1,12 @@
-import { TextChannel } from "discord.js";
+import type { NewsChannel, TextChannel, AnyThreadChannel, ForumChannel } from "discord.js";
 
 import { FeedMessage } from "./generator/feed";
 import { parseContent } from "./parser";
 
+type Channel = NewsChannel | TextChannel | AnyThreadChannel<boolean> | ForumChannel;
+
 // TODO: handle rate limits
-export async function fetchAllChannelMessages(channel: TextChannel): Promise<FeedMessage[]> {
+export async function fetchAllChannelMessages(channel: Channel): Promise<FeedMessage[]> {
     const buffer: FeedMessage[] = [];
 
     let message = await channel.messages
