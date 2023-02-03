@@ -2,6 +2,7 @@ import { config } from "./config";
 import { rssBot } from "./bot";
 
 import { toHTML } from "discord-markdown";
+import { Attachment } from "discord.js";
 
 const Regex = Object.freeze({
     R_ROLE: /(?<=\<span class="d-mention d-role">)(.*?)(?=<\/span>)/g,
@@ -32,7 +33,7 @@ function transform(regex: RegExp, content: string, callback: (id: string) => voi
     }
 }
 
-export function parseContent(content: string): string {
+export function parseContent(content: string, attachments: IterableIterator<Attachment>): string {
     const guild = rssBot.guilds.cache.get(config.discord.guild_id);
     if (!guild) {
         throw new Error(`No guild found for the id (${config.discord.guild_id})`);
@@ -83,6 +84,15 @@ export function parseContent(content: string): string {
     content = content.replaceAll('<span class="d-spoiler"', "<span data-spoiler");
     content = content.replaceAll('<img class="d-emoji d-emoji-animated"', "<img data-emoji");
     content = content.replaceAll('<img class="d-emoji"', "<img data-emoji");
+
+    let imgs = "";
+    for (const attachment of attachments) {
+        imgs += `<img alt="${attachment.name}" src="${attachment.url}">`;
+    }
+
+    if (imgs.length > 0) {
+        content += `<span data-images>${imgs}</span>`;
+    }
 
     return content;
 }

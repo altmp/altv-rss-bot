@@ -23,7 +23,7 @@ export async function fetchAllChannelMessages(channel: Channel): Promise<FeedMes
             channel.name,
             message.id,
             message.url,
-            parseContent(message.content),
+            parseContent(message.content, message.attachments.values()),
             message.createdAt,
             Boolean(message.editedAt)
         )
@@ -37,7 +37,7 @@ export async function fetchAllChannelMessages(channel: Channel): Promise<FeedMes
                         channel.name,
                         message.id,
                         message.url,
-                        parseContent(message.content),
+                        parseContent(message.content, message.attachments.values()),
                         message.createdAt,
                         Boolean(message.editedAt)
                     )
