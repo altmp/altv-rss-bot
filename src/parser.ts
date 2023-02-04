@@ -8,35 +8,11 @@ const Regex = Object.freeze({
     R_ROLE: /(?<=\<span class="d-mention d-role">)(.*?)(?=<\/span>)/g,
     R_CHANNEL: /(?<=\<span class="d-mention d-channel">)(.*?)(?=<\/span>)/g,
     R_USER: /(?<=\<span class="d-mention d-user">)(.*?)(?=<\/span>)/g,
-    R_TIMESTAMP: /<t:(\d+)(?:\:(\w))?>/g,
+    R_TIMESTAMP: /&lt;t:(\d+)(?::([tTdDfFR]))?&gt;/g,
 });
 
 function hexToRgb(hex: string) {
     return `${hex.match(/\w\w/g)?.map((x) => +`0x${x}`)}`;
-}
-
-function transformTimestamps(content: string): string {
-    const timestampStyles = [undefined, "t", "T", "d", "D", "f", "F", "R"];
-
-    for (const [origin, timestamp, style] of content.matchAll(Regex.R_TIMESTAMP)) {
-        if (timestamp == null || !timestampStyles.includes(style)) {
-            console.error(`Skipped timestamp (${origin})`);
-            continue;
-        }
-
-        /**
-         * I choosed to not override the the default style to "f" so
-         * if Discord changes it in the future, its less likely to break
-         */
-        content = content.replace(
-            origin,
-            `<span ${
-                style == null ? "data-timestamp" : `data-timestamp="${style}"`
-            }>${timestamp}</span>`
-        );
-    }
-
-    return content;
 }
 
 function transform(regex: RegExp, content: string, callback: (id: string) => void) {
@@ -79,7 +55,6 @@ export function parseContent(content: string, attachments: IterableIterator<Atta
         throw new Error(`No guild found for the id (${config.discord.guild_id})`);
     }
 
-    content = transformTimestamps(content);
     content = toHTML(content);
 
     transform(Regex.R_CHANNEL, content, (id) => {
@@ -121,6 +96,12 @@ export function parseContent(content: string, attachments: IterableIterator<Atta
     content = content.replaceAll('<span class="d-spoiler"', "<span data-spoiler");
     content = content.replaceAll('<img class="d-emoji d-emoji-animated"', "<img data-emoji");
     content = content.replaceAll('<img class="d-emoji"', "<img data-emoji");
+
+    // transform timestamps
+    content.replace(
+        /&lt;t:(?<timestamp>\d+)(?::(?<style>[tTdDfFR]))?&gt;/g,
+        '<span data-timestamp="$<style>">$<timestamp></span>'
+    );
 
     // transform images at the end of the content
     content = transformImages(content, attachments);
