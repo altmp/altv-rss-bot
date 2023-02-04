@@ -89,19 +89,21 @@ export function parseContent(content: string, attachments: IterableIterator<Atta
         }
     });
 
-    // set @everyone and @here as mentions
-    content = content.replaceAll("@everyone", "<span data-mention>@everyone</span>");
-    content = content.replaceAll("@here", "<span data-mention>@here</span>");
+    content = content
+        // set @everyone and @here as mentions
+        .replace(/@everyone/g, "<span data-mention>@everyone</span>")
+        .replace(/@here/g, "<span data-mention>@here</span>")
 
-    content = content.replaceAll('<span class="d-spoiler"', "<span data-spoiler");
-    content = content.replaceAll('<img class="d-emoji d-emoji-animated"', "<img data-emoji");
-    content = content.replaceAll('<img class="d-emoji"', "<img data-emoji");
+        // transform parsed "toHtml" classes to rss attributes
+        .replace(/class="d-spoiler"/g, "data-spoiler")
+        .replace(/class="d-emoji d-emoji-animated"/g, "data-emoji")
+        .replace(/class="d-emoji"/g, "data-emoji")
 
-    // transform timestamps
-    content.replace(
-        /&lt;t:(?<timestamp>\d+)(?::(?<style>[tTdDfFR]))?&gt;/g,
-        '<span data-timestamp="$<style>">$<timestamp></span>'
-    );
+        // transform timestamps
+        .replace(
+            /&lt;t:(?<timestamp>\d+)(?::(?<style>[tTdDfFR]))?&gt;/g,
+            '<span data-timestamp="$<style>">$<timestamp></span>'
+        );
 
     // transform images at the end of the content
     content = transformImages(content, attachments);
