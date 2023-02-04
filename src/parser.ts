@@ -61,7 +61,7 @@ function transformImages(content: string, attachments: IterableIterator<Attachme
     let imgs = "";
 
     for (const attachment of attachments) {
-        if (["jpg", "png"].includes(attachment.url.split(".")?.at(-1) ?? "")) {
+        if (["jpeg", "jpg", "png", "gif"].includes(attachment.url.split(".")?.at(-1) ?? "")) {
             imgs += `<img alt="${attachment.name}" src="${attachment.url}">`;
         }
     }
