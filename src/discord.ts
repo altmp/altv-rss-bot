@@ -11,12 +11,12 @@ type Channel = NewsChannel | TextChannel | AnyThreadChannel<boolean> | ForumChan
 function getAttachmentsFromEmbed(message: Message<true>): string[] {
     const embedAttachments: string[] = [];
 
-    message.embeds.forEach((embed) => {
+    for (const embed of message.embeds) {
         // ref: https://discord.com/developers/docs/resources/channel#embed-object-embed-types
         if (embed.data.type === "image" || embed.data.type === "gifv") {
             embedAttachments.push(embed.data.url!);
         }
-    });
+    }
 
     return embedAttachments;
 }
@@ -54,14 +54,6 @@ async function fetchAllChannelMessages(channel: Channel): Promise<FeedMessage[]>
     while (message) {
         await channel.messages.fetch({ limit: 100, before: message.id }).then((page) => {
             page.forEach((message) => {
-                const embedAttachments: string[] = [];
-                message.embeds.forEach((embed) => {
-                    // ref: https://discord.com/developers/docs/resources/channel#embed-object-embed-types
-                    if (embed.data.type === "image" || embed.data.type === "gifv") {
-                        embedAttachments.push(embed.data.url!);
-                    }
-                });
-
                 buffer.push(
                     new FeedMessage(
                         channel.name,
