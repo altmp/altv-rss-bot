@@ -8,7 +8,7 @@ import { rssBot } from "./bot";
 
 type Channel = NewsChannel | TextChannel | AnyThreadChannel<boolean> | ForumChannel;
 
-function getattachmentsFromEmbed(message: Message<true>): string[] {
+function getAttachmentsFromEmbed(message: Message<true>): string[] {
     const embedAttachments: string[] = [];
 
     message.embeds.forEach((embed) => {
@@ -43,7 +43,7 @@ async function fetchAllChannelMessages(channel: Channel): Promise<FeedMessage[]>
             parseContent(
                 message.content,
                 // TODO: make it uniform
-                getattachmentsFromEmbed(message),
+                getAttachmentsFromEmbed(message),
                 message.attachments.values()
             ),
             message.createdAt,
@@ -70,7 +70,7 @@ async function fetchAllChannelMessages(channel: Channel): Promise<FeedMessage[]>
                         parseContent(
                             message.content,
                             // TODO: make it uniform
-                            getattachmentsFromEmbed(message),
+                            getAttachmentsFromEmbed(message),
                             message.attachments.values()
                         ),
                         message.createdAt,
