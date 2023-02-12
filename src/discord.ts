@@ -1,4 +1,4 @@
-import type { NewsChannel, TextChannel, AnyThreadChannel, ForumChannel } from "discord.js";
+import type { NewsChannel, TextChannel, AnyThreadChannel, ForumChannel, Message } from "discord.js";
 import { ChannelType } from "discord.js";
 
 import { FeedMessage } from "./generator/feed";
@@ -7,6 +7,19 @@ import { config } from "./config";
 import { rssBot } from "./bot";
 
 type Channel = NewsChannel | TextChannel | AnyThreadChannel<boolean> | ForumChannel;
+
+function getattachmentsFromEmbed(message: Message<true>): string[] {
+    const embedAttachments: string[] = [];
+
+    message.embeds.forEach((embed) => {
+        // ref: https://discord.com/developers/docs/resources/channel#embed-object-embed-types
+        if (embed.data.type === "image" || embed.data.type === "gifv") {
+            embedAttachments.push(embed.data.url!);
+        }
+    });
+
+    return embedAttachments;
+}
 
 // TODO: handle rate limits
 async function fetchAllChannelMessages(channel: Channel): Promise<FeedMessage[]> {
@@ -21,12 +34,18 @@ async function fetchAllChannelMessages(channel: Channel): Promise<FeedMessage[]>
         return buffer;
     }
 
+    console.log(message.embeds);
     buffer.push(
         new FeedMessage(
             channel.name,
             message.id,
             message.url,
-            parseContent(message.content, message.attachments.values()),
+            parseContent(
+                message.content,
+                // TODO: make it uniform
+                getattachmentsFromEmbed(message),
+                message.attachments.values()
+            ),
             message.createdAt,
             Boolean(message.editedAt)
         )
@@ -34,18 +53,31 @@ async function fetchAllChannelMessages(channel: Channel): Promise<FeedMessage[]>
 
     while (message) {
         await channel.messages.fetch({ limit: 100, before: message.id }).then((page) => {
-            page.forEach((message) =>
+            page.forEach((message) => {
+                const embedAttachments: string[] = [];
+                message.embeds.forEach((embed) => {
+                    // ref: https://discord.com/developers/docs/resources/channel#embed-object-embed-types
+                    if (embed.data.type === "image" || embed.data.type === "gifv") {
+                        embedAttachments.push(embed.data.url!);
+                    }
+                });
+
                 buffer.push(
                     new FeedMessage(
                         channel.name,
                         message.id,
                         message.url,
-                        parseContent(message.content, message.attachments.values()),
+                        parseContent(
+                            message.content,
+                            // TODO: make it uniform
+                            getattachmentsFromEmbed(message),
+                            message.attachments.values()
+                        ),
                         message.createdAt,
                         Boolean(message.editedAt)
                     )
-                )
-            );
+                );
+            });
             message = 0 < page.size ? page.at(page.size - 1) : null;
         });
     }

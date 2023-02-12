@@ -33,8 +33,16 @@ function transform(regex: RegExp, content: string, callback: (id: string) => voi
     }
 }
 
-function transformImages(content: string, attachments: IterableIterator<Attachment>): string {
+function transformImages(
+    content: string,
+    attachmentUrls: string[],
+    attachments: IterableIterator<Attachment>
+): string {
     let imgs = "";
+
+    for (const url of attachmentUrls) {
+        imgs += `<img alt="attachment" src="${url}">`;
+    }
 
     for (const attachment of attachments) {
         if (["jpeg", "jpg", "png", "gif"].includes(attachment.url.split(".")?.at(-1) ?? "")) {
@@ -49,7 +57,11 @@ function transformImages(content: string, attachments: IterableIterator<Attachme
     return content;
 }
 
-export function parseContent(content: string, attachments: IterableIterator<Attachment>): string {
+export function parseContent(
+    content: string,
+    attachmentUrls: string[],
+    attachments: IterableIterator<Attachment>
+): string {
     const guild = rssBot.guilds.cache.get(config.discord.guild_id);
     if (!guild) {
         throw new Error(`No guild found for the id (${config.discord.guild_id})`);
@@ -106,7 +118,7 @@ export function parseContent(content: string, attachments: IterableIterator<Atta
         );
 
     // transform images at the end of the content
-    content = transformImages(content, attachments);
+    content = transformImages(content, attachmentUrls, attachments);
 
     return content;
 }
