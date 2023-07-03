@@ -1,10 +1,10 @@
-import "./events/messages";
-import "./events/command";
-import "./events/ready";
+import "./discord/events/messages";
+import "./discord/events/command";
+import "./discord/events/ready";
 
 import { assertPaths } from "./io";
 import { config } from "./config";
-import { rssBot } from "./bot";
+import { rssBot } from "./discord/bot";
 
 assertPaths();
 rssBot.login(config.bot.token);

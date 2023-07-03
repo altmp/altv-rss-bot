@@ -2,7 +2,7 @@ import { Routes } from "discord.js";
 
 import { commands } from "../commands";
 import { rssBot, rest } from "../bot";
-import { config } from "../config";
+import { config } from "../../config";
 
 rssBot.on("ready", async () => {
     try {

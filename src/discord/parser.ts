@@ -1,4 +1,4 @@
-import { config } from "./config";
+import { config } from "../config";
 import { rssBot } from "./bot";
 
 import { toHTML } from "discord-markdown";

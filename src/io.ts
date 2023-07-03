@@ -4,7 +4,7 @@ import { stat } from "node:fs/promises";
 import { parse as parseToml } from "toml";
 import { join, resolve } from "path";
 
-import { type FeedType, FEED_TYPE } from "./generator/feed";
+import { type FeedType, FEED_TYPE, FILE_DECLARATION } from "./consts";
 import { config } from "./config";
 
 export async function assertPaths(): Promise<void> {
@@ -41,15 +41,15 @@ export async function readConfigFile(): Promise<string> {
     }
 }
 
-export async function writeRssFile(feedType: FeedType[keyof FeedType], content: string): Promise<string> {
+export async function writeRssFile(type: FeedType[keyof FeedType], content: string): Promise<string> {
     const configOutFile =
-        feedType === FEED_TYPE.FT_LIMITED
+        type === FEED_TYPE.LIMITED
             ? config.out.limited_feed_out_file
             : config.out.full_feed_out_file;
 
     let path = resolve(config.out.out_file_dir ?? configOutFile ?? "");
     if (!path.endsWith(".rss")) {
-        path = join(path, `${feedType.description}.rss`);
+        path = join(path, `${FILE_DECLARATION[type]}`);
     }
 
     writeFile(path, content);

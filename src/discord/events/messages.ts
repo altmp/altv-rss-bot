@@ -1,7 +1,7 @@
 import { type PartialMessage, Message } from "discord.js";
 
-import { rssProcedure } from "../rss";
-import { config } from "../config";
+import { rssProcedure } from "../../rss";
+import { config } from "../../config";
 import { rssBot } from "../bot";
 
 function filterMessage(message: Message | PartialMessage): void {

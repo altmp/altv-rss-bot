@@ -1,9 +1,9 @@
 import type { NewsChannel, TextChannel, AnyThreadChannel, ForumChannel, Message } from "discord.js";
 import { ChannelType } from "discord.js";
 
-import { FeedMessage } from "./generator/feed";
+import { FeedMessage } from "../rss-generator/structs/FeedMessage";
 import { parseContent } from "./parser";
-import { config } from "./config";
+import { config } from "../config";
 import { rssBot } from "./bot";
 
 type Channel = NewsChannel | TextChannel | AnyThreadChannel<boolean> | ForumChannel;
@@ -55,6 +55,7 @@ async function fetchAllChannelMessages(channel: Channel): Promise<FeedMessage[]>
         await channel.messages.fetch({ limit: 100, before: message.id }).then((page) => {
             page.forEach((message) => {
                 buffer.push(
+                    // I dont really like starting to format here via FeedMessage, might wanna change it in the future
                     new FeedMessage(
                         channel.name,
                         message.id,
@@ -100,5 +101,7 @@ export async function getChannelsMessages() {
         buffer.push(...(await fetchAllChannelMessages(channel)));
     }
 
-    return buffer;
+    return buffer.sort(
+        (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+    );
 }

@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
-import { rssProcedure } from "../rss.js";
+import { rssProcedure } from "../../rss.js";
 
 export const rssCommand = new SlashCommandBuilder()
     .setName("rss")

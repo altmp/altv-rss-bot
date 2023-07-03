@@ -1,7 +1,7 @@
 import type { Author, Category, Enclosure, Item } from "./types";
-import * as convert from "xml-js";
+import { Feed } from "./structs/Feed";
 
-import { Feed } from "./feed";
+import * as convert from "xml-js";
 
 export function sanitize(url: string | undefined): string | undefined {
     if (typeof url === "undefined") {
