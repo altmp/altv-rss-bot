@@ -1,6 +1,6 @@
 import { type PartialMessage, Message } from "discord.js";
 
-import { Feed } from "../generator/feed";
+import { rssProcedure } from "../rss";
 import { config } from "../config";
 import { rssBot } from "../bot";
 
@@ -13,7 +13,7 @@ function filterMessage(message: Message | PartialMessage): void {
         return;
     }
 
-    Feed.generate();
+    rssProcedure();
 }
 
 rssBot.on("messageCreate", filterMessage);

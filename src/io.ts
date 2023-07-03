@@ -30,18 +30,18 @@ export async function assertPaths(): Promise<void> {
     }
 }
 
-export async function readConfigFile() {
+export async function readConfigFile(): Promise<string> {
     try {
         const tomlConfigPath = join(process.cwd(), "rss-config.toml");
         const configStr = await readFile(tomlConfigPath, "utf-8");
-        return parseToml(configStr);
+        return parseToml(configStr) as string;
     } catch (error) {
         console.error(error);
         process.exit(1);
     }
 }
 
-export async function writeRssFile(feedType: FeedType[keyof FeedType], content: string) {
+export async function writeRssFile(feedType: FeedType[keyof FeedType], content: string): Promise<string> {
     const configOutFile =
         feedType === FEED_TYPE.FT_LIMITED
             ? config.out.limited_feed_out_file
@@ -53,4 +53,5 @@ export async function writeRssFile(feedType: FeedType[keyof FeedType], content: 
     }
 
     writeFile(path, content);
+    return path;
 }

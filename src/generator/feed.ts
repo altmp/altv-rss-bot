@@ -36,16 +36,16 @@ export class FeedMessage {
 }
 
 export type FeedType = typeof FEED_TYPE;
-export const FEED_TYPE = Object.freeze({
+export const FEED_TYPE = {
     FT_LIMITED: Symbol("limited-feed"),
     FT_FULL: Symbol("full-feed"),
-});
+} as const;
 
 /**
  * Class used to generate Feeds
  */
 export class Feed {
-    static async generate(): Promise<void> {
+    static async generate(): Promise<[string, string]> {
         // TODO: different url for limited type feed
         const limitedFeed = new Feed({
             title: "",
@@ -80,9 +80,7 @@ export class Feed {
             message.addItem(fullFeed);
         }
 
-        writeRssFile(FEED_TYPE.FT_LIMITED, limitedFeed.rss2());
-        writeRssFile(FEED_TYPE.FT_FULL, fullFeed.rss2());
-        console.log(`Generating rss files..`);
+        return [limitedFeed.rss2(), fullFeed.rss2()];
     }
 
     options: FeedOptions;

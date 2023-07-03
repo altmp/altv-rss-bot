@@ -4,12 +4,12 @@ import { rssBot } from "./bot";
 import { toHTML } from "discord-markdown";
 import { Attachment } from "discord.js";
 
-const Regex = Object.freeze({
+const Regex = {
     R_ROLE: /(?<=\<span class="d-mention d-role">)(.*?)(?=<\/span>)/g,
     R_CHANNEL: /(?<=\<span class="d-mention d-channel">)(.*?)(?=<\/span>)/g,
     R_USER: /(?<=\<span class="d-mention d-user">)(.*?)(?=<\/span>)/g,
     R_TIMESTAMP: /&lt;t:(\d+)(?::([tTdDfFR]))?&gt;/g,
-});
+} as const;
 
 function hexToRgb(hex: string) {
     return `${hex.match(/\w\w/g)?.map((x) => +`0x${x}`)}`;
