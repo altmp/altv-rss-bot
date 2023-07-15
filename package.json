@@ -10,6 +10,7 @@
         "@altmp/upload-tool": "^1.1.22",
         "discord-markdown": "^2.5.1",
         "discord.js": "^14.7.1",
+        "dotenv": "^16.3.1",
         "feed": "^4.2.2",
         "toml": "^3.0.0",
         "xml-js": "^1.6.11",

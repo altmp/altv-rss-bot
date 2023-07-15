@@ -1,3 +1,5 @@
+import 'dotenv/config'
+
 import { generateRssFeed } from "./rss-generator/generate";
 import { getChannelsMessages } from "./discord/helpers";
 import { FEED_TYPE, FILE_DECLARATION } from "./consts";
