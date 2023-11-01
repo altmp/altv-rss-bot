@@ -1,7 +1,6 @@
-import { readFile, writeFile } from "node:fs/promises";
+import { writeFile } from "node:fs/promises";
 import { stat } from "node:fs/promises";
 
-import { parse as parseToml } from "toml";
 import { join, resolve } from "path";
 
 import { type FeedType, FEED_TYPE, FILE_DECLARATION } from "./consts";
@@ -24,17 +23,6 @@ export async function assertPaths(): Promise<void> {
         // if (config.out.full_feed_out_file) {
         //     dirPromises.push(stat(resolve(config.out.full_feed_out_file)));
         // }
-    } catch (error) {
-        console.error(error);
-        process.exit(1);
-    }
-}
-
-export async function readConfigFile(): Promise<string> {
-    try {
-        const tomlConfigPath = join(process.cwd(), "rss-config.toml");
-        const configStr = await readFile(tomlConfigPath, "utf-8");
-        return parseToml(configStr) as string;
     } catch (error) {
         console.error(error);
         process.exit(1);
